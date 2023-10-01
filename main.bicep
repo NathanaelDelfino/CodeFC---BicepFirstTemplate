@@ -8,15 +8,11 @@ param environmentType string
 param location string = 'westus3'
 
 var storageAccountNameSkuName = (environmentType == 'prod') ? 'Standard_GRS' : 'Standard_LRS'
-var appServicePlanSkuName = (environmentType == 'prod') ? 'P2V3' : 'F1'
+
 
 
 param storageAccountName string =  'codefc${uniqueString(resourceGroup().id)}'
-
-param AppServiceAppName string = 'codefc-toy-produtct-launch-2'
-var AppServicePlanName  = 'codefc-toy-product-launch-plan-starter'
-
-
+param AppServiceAppName string = 'codefc-${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -30,19 +26,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: AppServicePlanName
-  location: location
-  sku:{
-    name: appServicePlanSkuName
-  }
+
+module appService 'modules/appService.bicep' ={
+  name: 'appService'
+  params:{
+    location: location
+    appServiceAppName: AppServiceAppName
+    environmentType: environmentType
+  } 
 }
 
-resource appServiceapp 'Microsoft.Web/sites@2022-03-01' = {
-  name: AppServiceAppName
-  location: location
-  properties:{
-    serverFarmId: appServicePlan.id
-    httpsOnly: true
-  }
-}
+output appServiceAppHostName string = appService.outputs.appServiceAppHostName
