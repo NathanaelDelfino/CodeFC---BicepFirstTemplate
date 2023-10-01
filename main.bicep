@@ -1,4 +1,4 @@
-param storageAccountName string = uniqueString(resourceGroup().id)
+param storageAccountName string =  'codefcmy${uniqueString(resourceGroup().id)}'
 
 
 param AppServiceAppName string = 'codefc-toy-produtct-launch-1'
