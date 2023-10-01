@@ -1,5 +1,11 @@
+param AppServiceAppName string = 'codefc-toy-produtct-launch-1'
+var AppServicePlanName  = 'toy-product-launch-plan-starter'
+param AppStorageAccountName string = 'codefcmyfirsttemplate'
+
+
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: 'codefcmyfirsttemplate'
+  name: AppStorageAccountName
   location: 'westus3'
   sku: {
     name: 'Standard_LRS'
@@ -11,7 +17,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: 'toy-product-launch-plan-starter'
+  name: AppServicePlanName
   location: 'westus3'
   sku:{
     name:'F1'
@@ -19,10 +25,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 }
 
 resource appServiceapp 'Microsoft.Web/sites@2022-03-01' = {
-  name: 'codefc-toy-produtct-launch-1'
+  name: AppServiceAppName
   location: 'westus3'
   properties:{
     serverFarmId: appServicePlan.id
-    httpOnly: true
+    httpsOnly: true
   }
 }
