@@ -11,11 +11,11 @@ var storageAccountNameSkuName = (environmentType == 'prod') ? 'Standard_GRS' : '
 
 
 
-param storageAccountName string =  'codefc${uniqueString(resourceGroup().id)}'
+param storageAccountName string =  'codefc'
 param AppServiceAppName string = 'codefc-${uniqueString(resourceGroup().id)}'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: storageAccountName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = [for i in range(0, 5) :{
+  name: '${storageAccountName}versao${i}'
   location: location
   sku: {
     name: storageAccountNameSkuName
@@ -24,7 +24,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     accessTier: 'Hot'
   }
-}
+}]
+
+
 
 
 module appService 'modules/appService.bicep' ={
